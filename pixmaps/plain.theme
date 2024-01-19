@@ -1,0 +1,6 @@
+WHITE_PIECE = white.png
+BLACK_PIECE = black.png
+WHITE_SQUARE = white_square.png
+GREY_SQUARE = grey_square.png
+ARROW_SQUARE = black_square.png
+DRAW_GRID = TRUE

@@ -1,0 +1,43 @@
+bug1:
+--------------------------------------
+start new game
+player vs player
+press autofinish
+while thingy is moving press new game
+segfault or wierd behaviour occurs
+--------------------------------------
+
+bug2:
+--------------------------------------
+start new game
+player vs player
+press autofinish
+while thingy moves close app
+---------------------------------------
+
+bug3+4:
+---------------------------------------
+move thingy outside of board. 
+while its moving back press new game
+bug4: quit while its moving back
+---------------------------------------
+
+
+bug5 
+---------------------------------------------------------------
+start new game
+while player black ai
+move g1 thingy very close to settings
+while its moving back try chainging theme
+warning message is displayed ("Theme cant be updated blah..").
+but game stops after that at "move white amazon" 
+- without being able to actually move it
+actually you dont even have to pick theme. just open theme menu
+and press ok(easier to press enter).
+ it wont be able to open *.theme but will stop game
+
+Even better. no need to move anything. try opening blarg.theme 
+which doesnt exist. game will kinda freeze on move white amazon
+---------------------------------------------------------------
+
+

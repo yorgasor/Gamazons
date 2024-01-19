@@ -1,0 +1,3 @@
+gui board representation added an extra white queen, making it impossible for me to move or fire to that square.
+
+When the AI wins against a human, the AI doesn't know the game is over, because it doesn't check until after a human goes.  Maybe have the AI check possible opponents moves and if there aren't any, it wins.

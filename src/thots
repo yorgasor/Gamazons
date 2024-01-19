@@ -1,0 +1,360 @@
+================================================================================
+DONE
+================================================================================
+
+* Maintaining game state
+	The problem is, what_next is getting tweaked everywhere.  Everything
+	that is supposed to be done when a state change might not be taking
+	place everywhere.  Perhaps what I should do is set an API to tweak the
+	state, perhaps set_state()/get_state() functions would be in order.
+
+* Create themes capability.  Instead of having game pieces hard coded in the
+	program, have various theme files for the user to choose from.  Make
+	this selectable and changeable at runtime without hosing the game state.
+
+* Where to store the .gamazons file
+	I noticed gnome-chess stored the user config file in the .gnome
+	directory.  Perhaps there's a standard location for gnome's config files
+	that I can retreive via some gnome function call.
+
+* Generate the moves made list
+	I've got that nice fancy window taking up precious real estate.  I might
+	as well use it for what it was for.
+
+* Install icons and menu features when game is installed.  gnome chess created a
+	desktop file in /usr/local/share/gnome/apps.  I'm not exactly sure how
+	to put the item in the game menu yet.
+
+* Redo board drawing method
+	Instead of generating squares and filling them in with squares, lets use
+	pngs of squares and place them on the board.  It might be useful to
+	store pointers to each square img in an array to allow easy access.
+	Once the tiles are placed on the board, then draw the grid on top of it.
+	This will make things much easier to replace board colors at will.  I
+	could make options that let people choose tiles & pieces.  Note: Created
+	theme capability so people can load new board theme on demand.
+
+
+* Keeping up with option/game changes
+	Some options may change during the middle of the game.  For example, the
+	autocomplete would make both players computer opponents.  The network
+	stuff wouldn't be able to change.  Each time the back end has to use one
+	of these changeable options, it should read it directly from the source.
+	
+	But if we had a setup mode, the user could switch off game playing, configure 
+	the board, and reenter game mode.  To accomplish this, I'd need to change game 
+	recognition from a linear model (W moved this queen here, so unmark the src 
+	and mark the dest as the WQ), to a discover mode (look at all the squares on 
+	the board and see what is on each).  That's not very efficient for most things,
+       	so perhaps just making a " discover_board" function that can be called when 
+	exiting setup mode.
+
+
+* Create a help file
+	Gnome uses HTML files for help stuff.  Make a nice page that explains
+	the rules and what the buttons are for.  In general, they should be
+	installed in /usr/local/share/gnome/help/gamazons/.  Or I maybe
+	(PREFIX)/share/gnome/help/gamazons is more accurate.
+
+* Redo
+	This is completely useless.  If an undo has been done a couple of times,
+	and a different move has been made, Redoing by moving up a state in the
+	state array would completely void the different move that just took
+	place.  If a user Undos once, he can just make the same move again if he
+	really wants.  This just looks like it would create more bugs and not
+	add any useful functionality.
+
+* Undo/Redo menu
+	There's already a convenient Undo button on the game board.  Having two
+	separate ways to access this feature is unnecessary and bug-prone.  I'd
+	have to make sure that whenever one is disabled, the other is disabled
+	too.  Just dump the menu options, it's not very useful.
+
+* Handling Interrupts 
+	move_ai() should call a function to disable certain event handling instead of
+       	just having a silly global variable.  For instance, it could gray out the
+       	Auto Finish button so the user knows it's not going to do anything when he 
+	presses it.  Perhaps the 'Force Move' button should be greyed out until the AI
+       	is thinking, or since Force Move & Auto Finish are mutually exclusive, it would
+       	be cool to have the button switch labels depending on the state of the game.
+
+	gtk_button_set_label(GtkButton *button, const gchar *label);
+	gtk_widget_set_sensitive (GtkWidget *widget, gboolean sensitive);
+   	time = lookup_widget(PlayerSettingsWindow, "TimeSpinner");
+
+* Have a popup declaring the winner
+* Computer moving queens:  
+	Instead of having the queens just pop around on the board when the
+	computer is moving, the queen should slide so the human can see what
+	piece is moving.  I should be able to do some kind of move, maybe one
+	pixel at a time.  Just calculate the origin and the destination, and
+	they _should_ just be straight diagonal (increment x coord by 1,
+	increment y coord by 1, draw), or horiz or vert.  If moving by 1 is too
+	slow, we could make it 2 or whatever.
+
+* Remembering values:
+	I need to store user options in a .gamazons file.  When the user presses
+	OK in the player preferences, the values should be stored in this file
+	as well as in the global options struct.  Then, init_engine() should read
+	in the values from a file (if it exists).
+
+* Website requirements:
+	Explain how I verified that my program works
+	Explain what it takes to compile and run the program
+		Requires Gnome2
+		tweak a header file to compile amazons instead of gamazons
+	Post source code
+		Include a copy of the GPL w/ the source
+	Explain what it takes to run the program and how to use it
+
+* Keeping the GUI & engine in sync
+	Currently, amazons has a state stucture that is local to main and passed
+	around wherever deemed necessary.  Gamazons needs access to this, so
+	maybe I should make it global.  I can still make a pointer to the global
+	and pass that around so I don't have to mess around with all the
+	function prototypes.
+
+	I need to create some coordinate conversion routines though, since 0,0
+	is in the bottom left for amazons, and top left for gamazons.
+
+	I also need to find a way to let the engine know when it's the AI's turn 
+	to move.  I may need to take out it's ability to think during its
+	opponent's turn for this to work properly.
+
+	I currently keep track of game state on the GUI side as well as on the
+	engine side.  Should I dump the gui state and focus on the engine state?
+	Or is the convenience of not having to convert coordinates every time I
+	need to use one worth the inconvenience of keeping both in sync during
+	every change? -- Ugh, keep two, just keep them in sync.
+	
+* User input while the AI is thinking...
+	I should set a flag at the beginning of move_ai() that sez the computer
+	is thinking.  Then at the beginning of all callbacks, I should check to
+	see if the AI is preparing to move and ignore all user input until it's
+	safe.  While I'm at it, I should also make a check that if it is a human
+	player who's turn it is to move, that the human is moving his own
+	pieces.  ie, if it's white's turn, he shouldn't be able to pick up black
+	pieces.
+
+* Playing the game
+	Once the board is drawn and all the signals are registered, call a
+	function that checks if the first player is the AI or human.  If it's
+	the AI, start the searching process for the next move.  If it's a human,
+	just fall out of the function and don't do anything until the human
+	makes the first move (or maybe I could start the thinking process while
+	the human thinks also.  However, that may be more complicated and I
+	should start small and work into that one).  Then at the end of
+	processing the move signal (perhaps at the end of the fire_arrow
+	callback), I could check if the next move is done by human or AI.
+
+	I'll probably have two different functions for processing human moves
+	and AI moves, so I'd better make sure both work.
+
+* Text mode vs GUI mode
+	I would like to maintain both versions, as each one has its place.
+	Everything that's text dependent should be bracketed with 
+	#ifndef GAMAZONS, and stuff that's GUI dependent should be bracketed
+	with #ifdef GAMAZONS.  
+
+* handling options:
+	Instead of having several dozen global variables, each covering a
+	different option, I could make one big structure, covering all options.
+	Then I can create sub structs for network, players, etc...
+
+* Drawing the board
+   	it looks like I can use gnome_canvas_item_move to move a queen already placed
+       	on the board.  Perhaps I should draw the board initially, registering all the
+       	callbacks with them, etc... and then just use that to move them.  But then what
+       	does the draw_board function do?  gnome-chess called it all the time. 
+
+	looks like gnome chess just used board_update to see if any pieces were taken
+       	and deletes them if they are.  I don't know if I need to draw the board after
+       	the initial draw.
+
+* Text looks messed up with custom fonts & fixed game board size	
+	On Michael's computer, the game looked pretty screwy.  I dunno what
+	font settings he used, but it made it look pretty messed up.
+	Unfortunately, my board is designed to be precisely the size it is.  The
+	user doesn't have the ability to resize the game, board or pieces.
+	Unfortunately, this means people with high resolutions can't make the
+	board any bigger and people with low resolutions can't make it any
+	smaller.  To change this, I'd need to learn how to scale the pieces, the
+	game board, and redo all the calculations which determine where pieces
+	are and where to move them to.  If this were fixed, people with
+	different fonts could resize the board so it looked normal to them.
+	NOTE: Possibly fixed by just making more space for text
+
+================================================================================
+TODO
+================================================================================
+* Showing the latest square fired on:
+  	The square the AI (or human) fired it's arrow on could be a different color 
+	or shade until the next move starts.
+
+* Undo
+	Instead of having a straight state struct, maybe I should have an array
+	of 100 of them.  Then I could include a current move state and a max move
+	state so I could skip forward and backward.  
+
+	Hmm, should I keep 100 of both states? or just keep all those states on
+	the engine side, and use the GUI state only for the current state of the
+	board?  I'm currently inclined to just have the array on the engine
+	side.
+
+	What should Undo do?  If a human player has moved a piece but not fired
+	yet, undo should just move the piece back.  In this case, the engine
+	wouldn't need to be notified because the move isn't registered to the
+	engine until the arrow is fired.  If the human is playing an AI, the
+	Undo should go back to the last human opponent.  
+
+	When can Undo be used?  Once autofinish has started, Undo won't be able
+	to find a human opponent.  So it should be disabled once autofinish
+	starts.  I don't want the AI interrupted by Undo once it has started
+	moving, so it should be disabled once move_ai() starts, and can be
+	renabled at the end.
+
+* Have AI verify legality of Human move?  Have GUI verify legality of  AI move
+	Would it be useful to, when registering a human move w/ AI for it to 
+	verify the move was legal?  How about the GUI verifying an AI move is
+	legal?  Having these checks might catch inconsistencies in the game
+	design, and perhaps end the game gracefully, warning the user a bug has
+	just occured.  When this happens, I could dump the GUI state & AI state
+	to a text file, along with the offending move attempt to enhance
+	debugging.
+
+* Different difficulty levels & Separate AI settings for each player
+	I want to create different difficulty levels for the AI player.
+	Starting with 0 = random and moving up to 10 or so, adding one more
+	heuristic at each level.  
+
+	But then I'd like to separate the AI level, time, width, and TT.  That
+	way I can pit one player up against the other without them "cheating" by
+	knowing what the other player will do.  
+
+* Have a preview pane for different themes.
+* Make option to just see game board
+
+
+
+================================================================================
+FIXED BUGS
+================================================================================
+Black was set for a long run.  I shortened the think time.  Then I hit force
+move.   I think on black's next move he gained an extra queen and walked right
+over a queen & wall.  RESULT: Black suddenly had 5 amazons instead of 4.
+SOLUTION: when hitting 'OK', it called move_ai().  I added a global flag 
+' moving_ai' that it checks to see if move_ai() is already running.  If so, it 
+doesn't call it.
+
+After hitting Force Move, at the end of the game I pop open the player settings.
+It has both opponents set as AI (note, I should probably _always_ read in values
+from the .gamazons file instead of the widget's current values).  I hit ok,
+which saves those values to my .gamazons file, and then new game.  At this
+point, both players should be AI, but it insists on waiting for the human to
+move the AI.  Also when the game starts up in this state, it insists on waiting
+for the human to start.
+
+If both players are set to AI, and I have 'while(move_ai)' call in my main init
+function, the board doesn't have a chance to get drawn until the game is over.
+SOLUTION: Don't call 'while(move_ai)' from init_game_board().  If the user
+really wants the AIs to play against each other right away, he'll have to select
+New from the menu.
+
+ugh, now when I autofinish & select New game, I can't move my piece.  SOLUTION:
+move_ai() only changed the what_next variable if an AI player actually moved.
+Since New Game initialized what_next to WAIT_FOR_AI before calling move_ai() and
+White was set as a human player, we were stuck in WAIT_FOR_AI mode and couldn't
+move any pieces.  To solve this, I move the code that updated what_next outside
+of the "if AI is moving" block.
+
+If you hit 'autofinish' after the game has ended, selecting 'new game' doesn't
+start the game in a useable state.  It's white's turn to move, it's set as
+human, but what_next = MOVE_AI.  SOLUTION: Disable Autofinish & Force move at
+end of game.
+
+A4-C6, A7, undo moves the white piece on top of the black piece.  Solution: the
+new gui state machine only updates the to/from values when a legal move occurs.
+
+if you make a move, then change the theme, and press undo, the thing totally wigs 
+out. SOLUTION: Disable 'Settings' menu inbetween moving a piece and firing an
+arrow.
+
+move d1-d10, as it slides back, move a4-g10.  it freezes momentarily, now  move 
+j4 quickly to a7 and now x is dead or your window mgr freezes.  SOLUTION: Don't
+allow other game pieces to be picked up when another piece is sliding.
+
+search time = 1, max depth=0, max width = 0, white = AI, black = AI, press ok.
+You get a bazillion error messages and the pieces don't play.  SOLUTION: set the
+minimum max-depth value to be 1.
+
+After setting both players to AI, completing a game, selecting white as human
+and starting a new game, I can't pick up the white pieces.  SOLUTION: new board
+state machine fixed this.
+
+Playing with setting both players to AI, w/ time = 1, depth=1, width=0.  trying various
+combinations of depth=0/1 and width=0/1.  Sometimes I can't get the game to start w/
+both as AI, and switching to white=human, I can't pick up the pieces.  SOLUTION:
+new board state machine fixed this.
+
+settings->theme, press OK w/o selecting a theme.  Program quits w/ error, cannot
+open theme *.theme.  SOLUTION: have load theme from file return FALSE if it
+can't open the file, then handle the problem gracefully instead of trying to
+process it.
+
+Ack!  isearch() returns a move struct.  Not a pointer to a move struct.  Note: 
+the data holding this move struct is located in isearch(), and once this function
+returns, its value is no longer guaranteed to be valid!  It just _usually_ is. 
+This is the most likely cause of the repeated FORCE MOVE button coming back with
+wacked out moves.  I'm getting moves like: 50. g-6375-g-6408, d-6318 and 
+a1-g-6377, b-6358  SOLUTION: make sure isearch returns a valid move struct
+
+================================================================================
+BUGS
+================================================================================
+
+Anca somehow managed to lose a queen in the middle of the game when it was moved
+to the right edge of the screen.  She was more inclined to miss her target
+square & hit undo, but so far I haven't been able to replicate it.
+
+When restarting a game, I should free the malloc'ed board struct.
+destroy_board() would probably be a good place for this.
+
+0.81 bugs:
+
+Have theme window open, press autofinish.  Select theme.  It's not autofinishing
+anymore, and the settings menu is blocked out.  Also, if the theme changes while
+a piece is in midmove, it wigs out. 
+
+Changing themes as a piece is moving makes it wig out.  
+
+If you have a settings window open, then make a partial move you can then change
+any settings and muck up the game. 
+
+Pressing undo again as the piece is sliding back loses a queen.
+
+dragging a queen off the board miscalculates its location: ie A4-D3 but further
+off to the right, the queen slides back to A2, during which time you can press
+undo and totally muck it up. 
+
+Set white=AI, black=HUMAN.  New Game.  White moves, change black to AI.  Black
+moves, white never moves again. 
+
+Move history is screwed up.  G1-G7, D7: history shows d10-g7, d7
+
+0.82 Todo
+
+when a window is open, ignore all clicks on the board.  This will keep people
+from opening settings windows, then making partial moves etc...
+	- What about only being able to open a single window?  Ie - if I have
+    two windows open, and I close one, the open_window count is set to false and
+    it doesn't know there are other windows open.  Instead of having TRUE/FALSE,
+    values, inc/dec the counter, and when it's zero it's safe to reenable
+    buttons.
+X Disable certain interrupts when a piece is sliding (ie theme changes, undo, etc)
+
+X Do error checking on board location.  If a piece is out of bounds, it's not a
+valid move.
+
+X Fix history window for human moves
+
+X Fix state machine processing of player setting changes.

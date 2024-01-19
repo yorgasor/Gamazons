@@ -1,0 +1,15 @@
+autoscan: warning: missing AC_FUNC_MALLOC wanted by: 
+	src/board.c:44
+	src/eval.c:932
+	src/eval.c:1007
+	src/moves.c:1593
+	src/moves.c:1710
+autoscan: warning: missing AC_PROG_AWK wanted by: 
+	Makefile.in:209
+	Makefile.in:224
+	src/Makefile.in:230
+	src/Makefile.in:240
+autoscan: warning: missing AC_PROG_LN_S wanted by: 
+	Makefile.in:287
+	pixmaps/Makefile.in:157
+	src/Makefile.in:270

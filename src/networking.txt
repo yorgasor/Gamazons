@@ -1,0 +1,77 @@
+* Networking
+	Don't bother with a client/server relationship (eg freeciv).  This game should 
+	just be peer based.  Just pick some random unused port as a default.
+	The user should be able pick whatever port he wants, and whatever he
+	selects should be stored in the .gamazons file.
+
+	Hmm, we'll need to have one program listening on a port and another one
+	trying to make a connection.  Should it listen automatically? or only
+	upon request?  (Request)
+
+        How should each move be transmitted?  Should it be a simple string like
+	that in the move history?  Then the receiving side would need to break
+	it down to notify the engine what move was made.  How would this affect
+	player options?  Should I now have Human, AI, & Remote?  If I leave the
+	remote player marked as 'Human', the local human could muck w/ the move
+	and really screw up the state.
+
+	What about loading games?  For local games, I'd like to be able to save
+	a move history, then load either an unfinished game, or reenact a
+	previously played game.  If I try to finish a networked game, I need to
+	develop a way for both sides to get in sync (either by both sides
+	loading the same file, or by one loading it and the other getting its
+	state from its peer).  On the other hand, if by virtue of connecting to
+	another peer, a new game is started, the connection protocol is greatly
+	simplified.  But if I change the protocol later on down the line to
+	support these features, it may render the clients unable to communicate
+	properly.  Perhaps I should include the version of the client in the
+	protocol, so future versions will know what protocol portions are
+	understood.
+
+	Protocol: Specify who is playing what.  If client1's black player is
+	remote, client2's white player must be remote.  A client cannot have
+	more than one remote player specified.  Possibly, the clients could
+	cycle through the list of commands they understand, then the accepted
+	protocol must be the "lowest common denominator", and what features are
+	allowed are based on what both understand.
+
+	Error recovery: Errors have different degrees of severity.  How should I
+	deal with recovering from various possible errors?  Should I specify the
+	severity of the error with the error command?
+
+	Protocol Definition:		
+	Command		Arguments			Example
+	-------		-------				--------
+	MOVE		Move #. From-To, Arrow		"1. d1-d7, g7"	
+	START		P1=TYPE, P2=TYPE		"P1=Human", "P2=Remote"
+	WIN		Player				"P1"
+	QUERY		Command				"MOVE"
+	RESPONSE	Command, Value			"MOVE TRUE" or "MOVE FALSE"
+	ERROR		ErrID#				
+	MSG		Text message			"I'm taking you down"
+	DISCONNECT	None
+	CONNECT		None
+
+	LOAD START
+	LOAD MOVE
+	LOAD FINISH
+
+	Error types:
+	Unknown command
+	Illegal Move
+	Invalid Parameters
+	Confused State
+
+
+	Command Behavior:
+	MOVE  	Notifies remote client what the local client just did
+	START  	Verifies both sides have compatible player settings (ie both
+		clients aren't trying to be white) and initializes board to
+		original state.
+	WIN  	Notifies remote client that the game was just won by which
+		player.
+	QUERY	Asks remote client if it understands a certain command.  It
+		builds a list of acceptable commands that both can agree on.
+	RESPONSE  Replies to a query, notifies asker whether it knows that
+		command or not.
+	ERROR	Notifies remote client an error has occured.  

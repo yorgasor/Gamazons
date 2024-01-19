@@ -1,0 +1,201 @@
+<html>
+
+<head>
+<title>Gamazons Help</title>
+</head>
+
+<body>
+
+<h1>Gamazons</h1>
+
+<a href="#rules">Rules of the Game</a><br>
+<a href="#strategies">Strategies</a><br>
+<a href="#buttons">What the Buttons Do</a><br>
+<a href="#settings">Settings Menu</a><br>
+<a href="#future">Future Enhancements</a><br>
+
+
+<a NAME="rules"></a>
+<h2>Rules of the Game</h2>
+An amazon moves in a straight line in any direction, just like a chess queen.  
+When an amazon moves to a new spot, she's required to fire an "arrow", which 
+again travels in a straight line in any direction.  The square the arrow lands 
+on becomes an impenetrable wall, which neither amazons nor arrows can move 
+over or land on.  You also can't move or fire over other amazon pieces.  
+<p>
+Game play alternates turns, starting with the white player.  Each turn an 
+amazon moves and fires an arrow, thus each turn another square becomes unusable.
+The winner is the side that moves last.  
+
+<a NAME="strategies"></a>
+<h2>Strategies</h2>
+One way to judge a good move or position is by determining the number of 
+squares you can move to vs the number your opponent can move to.  You can 
+exert good control over your opponent by limiting his options.  The bad news 
+is, the computer can calculate this a lot faster and more accurately than you 
+can.  If this is your only strategy, you're going to get wupped.  
+<p>
+I've had good success by starting out with a full out attack on one amazon and
+then working on positioning the rest in good locations.  Try not to put your
+amazons too close to each other, try and move them to separate places so they
+own different squares.
+<p>
+The computer AI is a pretty decent player.  It has a decent board evaluator,
+but since there are so many different options to evaluate, it can't look very
+far ahead until late in the game.  It also can't plan strategies, like, "Ok,
+I'm going to try and claim this area for myself, so I'll block this guy here and
+then block that guy over there..."  You can.  Use it to your advantage.
+
+<a NAME="buttons"></a>
+<h2>What the Buttons Do</h2>
+<b>UNDO</b>
+<br>
+<blockquote>
+	Sometimes you may accidentally drop a piece in a spot you didn't mean
+	to.  It's especially touchy on laptop touchpads if you're not familiar
+	with them.  If you've made an accident like this, you're in luck.  Just
+	click on Undo and your amazon will move back.  If, however, you fired
+	your arrow, you're out of luck.  Once you've done that, the turn is
+	officially over and there's no going back (at least for now.  If I hear
+	from enough whiners^H^H^H^H^H^users who feel this would be a useful
+	feature, I'll raise the priority of multiple undo.
+</blockquote>
+<p>
+<b>FORCE MOVE</b>
+<br>
+<blockquote>
+	Ok, it seemed like a good idea when i first designed the game, but it's
+	probably not all that useful right now.  It's designed for the impatient
+	user who gets tired of waiting for the AI to move.  Right now, you can
+	specify the maximum time for the AI to think each turn, so if you don't
+	like waiting, just set that to a low value.  Eventually I'd like to give
+	the AI a variable time limit, perhaps within an overal set game time
+	(ie - it has 5 minutes to play its entire game, so budget that time as
+	best as possible).  Then this button <i>might</i> come in handy if it
+	gets stuck on one move too long and you get impatient.
+</blockquote>
+<p>
+<b>AUTO FINISH</b>
+<br>
+<blockquote>
+	Ah, one of the most annoying parts about Amazons in general is finishing
+	the game.  Once you get to the point where all the pieces are in their
+	own little areas, the game is pretty much decided.  It's just tedious
+	filling in the squares until one side runs out.  This button is meant to
+	remove this boredom.  Technically, all it does is set both sides to AI 
+	with only 1 second to think.  Generally, filling in squares is pretty
+	brainless stuff.  The only problem is, it doesn't always find the
+	optimal fillin method.  It's entirely possible (and in weird complicated
+	areas, likely) that it will seal off squares you could've used.  If
+	you've got a close game, you could lose because of such an error.
+	Eventually, I'll fix this to fill in the squares perfectly.  But for
+	now, use at your own risk.
+</blockquote>
+<p>
+<b>REPLAY</b>
+<br>
+<blockquote>
+	This button will allow you to load a saved history file, and will let you
+	watch a game that the history file describes.  In theory, you should be
+	able to load games from major tournaments, and be able to watch them in 
+	Gamazons.  Minor massaging of their notation might be necessary for Gamazons
+	to recognize it though.
+</blockquote>
+<p>
+<b>STOP</b>
+<br>
+<blockquote>
+	This will stop a running replay of a game.  This will allow you to go back to
+	a game that might have turned out differently if you did something else.  
+</blockquote>
+<p>
+<b>REPLAY DELAY</b>
+<br>
+<blockquote>
+	This sets the delay between moves in a game being replayed.
+</blockquote>
+<p>
+<b>MOVEMENT SPEED</b>
+<br>
+<blockquote>
+	This sets how fast the pieces slide across the board.  For slower machines, the
+	sliding might be painfully slow.  Incrementing this value may make it more 
+	tolerable.
+</blockquote>
+<p>
+
+
+<a NAME="settings"></a>
+<h2>Settings Menu</h2>
+
+<b>PLAYER</b>
+<br>
+<blockquote>
+	Here you have the ability to choose whether a side should be a human or
+	AI.  You can also set some strange settings for how the AI works: how
+	long he thinks, how far ahead he should look, and how many options he
+	should evaluate.  Really, all you need to worry about is how long you
+	want the AI to think.  However, if you really want to see how the other
+	setting affect its gameplay, here's what they mean.
+	<p>
+	The AI works by generating a search tree out of all the possible moves
+	it can make.  First, it gives evaluates all of the moves it can make
+	this turn.  Then it sorts them in a line, best move first, worst move
+	last.  Then it looks at what its best move and what kind of moves its 
+	opponent can make in response.  Then the second best move, etc... all
+	the way down the line.  A move's true value is not based solely on the
+	your move, but also what kind of move your opponent can do in response. 
+	<p>
+	The max search depth means how far deep it will look (ie - moves it 
+	can make, then moves its opponent can make, then moves it can make 
+	from there ...).  
+	<p>
+	The search width specifies how far down the line it will look evaluate
+	response values for.  For instance, if there are 3000 possible opening
+	moves, what are the odds that the absolute worst opening move will 
+	really turn out to be the best?  Some theories say it's best to 
+	evaluate all possible moves just to make sure there's not some trap in 
+	ignoring something further down.  So the default search width is 3000.
+	However, by evaluating the response of fewer moves, say 15-50 you reduce
+	the amount of work done at each level of the tree, thus you can see much
+	further ahead.  Obviously, there's a balance to be made.  And the
+	options exist so one can research the trade offs between searching wide
+	vs searching deep.
+	<p>
+</blockquote>
+<p>
+<b>THEME</b>
+<br>
+<blockquote>
+	Now you can select from a variety of themes that show give your gameboard 
+	a different appearance.  The theme files are very simple and just
+	contain the type of image and its location.  If you're feeling creative,
+	go ahead and experiement with your own themes.  If it looks halfway
+	decent, send it to me and I'll probably include it in the next release.
+	Note: Square images are 40x40 pixels, and the game pieces should fit
+	within that size.
+ </blockquote>
+<p>
+<a NAME="future"></a>
+<b>FUTURE ENHANCEMENTS</b>
+<br>
+<blockquote>
+	Soon you will see different difficulty
+	levels for the AI.  If you're new to the game and sick and tired of
+	getting your can kicked every time, you'll be able to choose between
+	several levels of difficulty (I'll even throw in a level that plays
+	completely random so there's almost no way you could lose.  Speaking of
+	which, remind me to add a feature that will detect if someone loses
+	against a random AI and have it email me the loser's name & email so I
+	can come back and taunt him).  I would also like to break the AI up into
+	two different parts.  So you could have black at level 9 with a
+	high max depth & high max width search play against white at level 6
+	with a low max depth & max width search.  It's really hard for me to
+	tell if a new heuristic is an improvement unless I can play it against
+	the old version, so I'm not even going to try to make a smarter AI until
+	these features are in.
+</blockquote>
+</body>
+</html>
+
+
